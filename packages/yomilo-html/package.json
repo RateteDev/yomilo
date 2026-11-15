@@ -24,5 +24,8 @@
     "hast-util-from-html-isomorphic": "^2.0.0",
     "hast-util-to-html": "^9.0.5",
     "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "unist-util-visit": "^5.0.0"
   }
 }

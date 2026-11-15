@@ -23,6 +23,9 @@
         "hast-util-to-html": "^9.0.5",
         "yaml": "^2.9.0",
       },
+      "devDependencies": {
+        "unist-util-visit": "^5.0.0",
+      },
       "peerDependencies": {
         "@yomilo/wasm": "workspace:*",
       },
