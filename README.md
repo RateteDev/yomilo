@@ -1,67 +1,90 @@
+<p align="center">
+  <br>
+  <br>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo-light.svg">
+    <img src="assets/logo-light.svg" alt="Yomilo のロゴ" width="320">
+  </picture>
+  <br>
+</p>
+<p align="center">
+  <a href="https://github.com/RateteDev/yomilo/releases/latest"><img src="https://img.shields.io/github/v/release/RateteDev/yomilo?label=release&color=0969DA" alt="最新のリリース"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2EA44F" alt="ライセンス: MIT"></a>
+</p>
+<p align="center">
+  日本語 ・ <a href="docs/readme/README.en.md">English</a>
+</p>
+<br/>
+
 # Yomilo
 
-**Yomilo（ヨミロ）** は、厳格なMarkdownを構造化し、読みやすく美しい表示へつなぐための独立した文書エンジンです。
-AIエージェントの文章を読みやすく表示したいという動機から生まれましたが、エージェント専用の設計ではありません。
+厳格なMarkdownを文書モデルへ構造化し、読みやすいHTMLへ描く。
 
-> **状態：ローカル開発・未公開。
-> ** Rustによる構造化・描画準備、Node/Bun向けWASM bridgeとTSのHTML Rendererを実装しています。
-> npm公開・ネイティブFFIはまだ行っていません。
-> 残っている作業はコード中の`TODO(名前)`で管理しています。
+- 🧱 原稿を要素ごとに判定し、規約に反した要素だけを拒否
+- ⚡ 書きかけの原稿から、確定した要素を順に描画
+- 🧩 吹き出し・コードの切替・図・画像・動画・リンクカードを記法で記述
+- 🎨 本文のHTMLとテーマを分けて配布
+- 🦀 Rustの中核をWASMで、Node・Bun・Workers・ブラウザから利用
 
-## 設計資料
+AIエージェントの文章を読みやすく表示したいという動機から生まれましたが、用途はエージェントに限りません。
 
-- [用語集](docs/用語集.md) — 文書表現と処理責務の定義
-- [ADR](docs/adr/) — 判断の記録
+## インストール
 
-処理の基本経路：**厳格Markdownソース → 構造化 → 構造化文書 → 描画準備 → 描画用文書 → 描画 → 描画結果**。
+パッケージはnpmではなく、[GitHub Releases](https://github.com/RateteDev/yomilo/releases)のtarballで配っています。
 
-当面は生成側が構造化・描画準備を担当します。
-構造化と描画準備は論理上は別責務ですが、現在はどちらもRustのCore crateに実装しています。
-HTML描画は別のTSパッケージで、ページ・URL・配色は利用側が決めます。
+```sh
+# 中核のWASMとHTMLの描画部を導入する（版はReleasesの最新に合わせる。例はv0.1.0）
+bun add https://github.com/RateteDev/yomilo/releases/download/v0.1.0/yomilo-wasm-0.1.0.tgz https://github.com/RateteDev/yomilo/releases/download/v0.1.0/yomilo-html-0.1.0.tgz
+# 必要なら最小テーマのCSSも導入する
+bun add https://github.com/RateteDev/yomilo/releases/download/v0.1.0/yomilo-theme-0.1.0.tgz
+```
 
-## このディレクトリの扱い
+## 使い方
 
-- `crates/yomilo-core/` — 構造化、入力診断、正規化、描画準備と公開文書モデル
-- `crates/yomilo-wasm/` — 非公開の`@yomilo/wasm`。
-  Rustからの型とNode/Bun向けWASMを供給
-- `packages/yomilo-html/` — 非公開の`@yomilo/html`。
-  本文のHTMLとフック、frontmatterと入力の検査、カードの取得
-- `packages/yomilo-theme/` — 非公開の`@yomilo/theme`。
-  本文HTMLへそのまま当てる最小テーマのCSS`minimal.css`
-- `docs/` — 用語集・ADR・資産の取り扱い
-- `experiments/phase0-rust/` — 成立性検証のソース。
-  **製品コードではありません**
-- `examples/` — 今後のサンプル用
+```ts
+import { renderArticleBody } from "@yomilo/html/engine";
+import { defaultPreparationInputs, prepareSegment, segment } from "@yomilo/wasm";
+
+const source = await Bun.file("article.md").text();
+// 原稿を要素ごとのセグメントに分ける
+const { segments } = segment(source, null, "complete");
+// 画像やカードの取得結果を渡さず、既定の入力で描画準備する
+const inputs = defaultPreparationInputs();
+// 本文のHTMLと題・見出し・診断を得る
+const { html, title, diagnostics } = renderArticleBody(segments.map((s) => prepareSegment(s, inputs)));
+```
+
+`@yomilo/html`はTypeScriptのソースを配っており、BunやバンドラーなどTypeScriptを扱える環境から読み込みます。
+CSS・操作スクリプト・目次・ページの枠は持たないため、見た目と操作は利用側で付けます。
+
+## Workersとブラウザ
+
+`@yomilo/wasm`の既定の入口はNodeのファイル読み込みを使います。
+それ以外の環境では`@yomilo/wasm/web`の`createYomilo`へ、WASMの本体を渡します。
+
+```ts
+import { createYomilo } from "@yomilo/wasm/web";
+// Workersでは、WASMの本体をモジュールとして読み込める
+import wasm from "@yomilo/wasm/yomilo_wasm_bg.wasm";
+
+// 既定の入口と同じ関数を持つオブジェクトを得る
+const yomilo = createYomilo(wasm);
+const { segments } = yomilo.segment(source, null, "complete");
+```
+
+## テーマ
+
+`@yomilo/theme/minimal.css`は、本文のHTMLへそのまま当てられる最小のテーマです。
+環境の書体を使い、フォントの本体は含みません。
+
+## 注意点
+
+- 原稿は厳格なMarkdownで書きます。
+  脚注・取り消し線・タスクリスト・Markdownの画像記法・生のHTMLは受け付けません。
+- 規約に反した要素は、拒否されたセグメントとして原文と診断を返し、ほかの要素の描画は続けます。
+- 素のNodeから`@yomilo/html`を直接実行することはできません。
 
 ## ライセンス
 
-新規に作成するYomiloのコードは[MIT](LICENSE)です。
-参照用の既存資産や第三者フォントへ自動的にMITを適用するものではありません。
-詳細は[資産の取り扱い](docs/資産の取り扱い.md)を参照してください。
-
-## 開発・公開
-
-Gitで管理していますが、リモートはなく、パッケージも公開していません。
-Rust workspaceとBun workspaceは同居し、版とlockfileはそれぞれ持ちます。
-
-```sh
-just setup
-just wasm-build   # 初回、またはRustの契約・実装を変更したとき
-just core-ci      # Rustだけ。Bunは不要
-just html-ci      # 準備済みWASMを使い、内部でRustを起動しない
-just ci-local
-```
-
-ツール版は`mise.toml`を正とします。
-WASMと型の準備は明示的に行います。
-CI設定はRust検査とWASM生成を分け、HTML検査へWASMを渡しますが、リモートでの実行は未確認です。
-
-HTMLパッケージのexportsはTSソースです。
-BunとAstro等のTSを処理する利用側を対象とし、素のNodeからの直接実行は未対応です。
-CSS・操作スクリプト・アイコン・ページの枠・目次・テーマの切替は持たず、利用側が用意します。
-
-本文のHTMLはアイコンへ表示寸法を指定せず、メディアの比率は`data-ratio-width`と`data-ratio-height`、素材の寸法は`data-intrinsic-width`と`data-intrinsic-height`、表の列揃えは`data-align`へ保持します。
-表示へ反映するか・どう反映するかはテーマが決め、原稿内SVGの座標と図形は原稿の内容として保持します。
-
-`/engine`の`renderArticleBody`は本文のHTMLとフックだけを返し、CSS・JS・テーマを受け取りません。
-操作子と装飾アイコンを出さず本文を隠さないため、開閉の初期状態は`data-fold`、図の拡大の指定は`data-zoom`、カードの取得状態は`data-icon-state`へ残し、見せ方と操作は利用側が付けます。
+[MIT License](LICENSE)
