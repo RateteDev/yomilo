@@ -60,14 +60,14 @@ It has no CSS, scripts, table of contents, or page frame, so the consumer adds t
 
 ## Workers and browsers
 
-The default entry of `@yomilo/wasm` reads the WASM file with Node APIs.
-In other environments, pass the WASM binary to `createYomilo` from `@yomilo/wasm/web`.
+On Workers (wrangler), the default entry imports the WASM as a module, so it works as is.
+In browsers and other environments, pass the WASM binary to `createYomilo` from `@yomilo/wasm/web`.
 
 ```ts
 import { createYomilo } from "@yomilo/wasm/web";
-// On Workers, the WASM binary can be imported as a module
-import wasm from "@yomilo/wasm/yomilo_wasm_bg.wasm";
 
+// Fetch the WASM binary (@yomilo/wasm/yomilo_wasm_bg.wasm) from wherever you serve it
+const wasm = await fetch("/yomilo_wasm_bg.wasm").then((r) => r.arrayBuffer());
 // Get an object with the same functions as the default entry
 const yomilo = createYomilo(wasm);
 const { segments } = yomilo.segment(source, null, "complete");

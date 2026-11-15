@@ -60,14 +60,14 @@ CSS・操作スクリプト・目次・ページの枠は持たないため、�
 
 ## Workersとブラウザ
 
-`@yomilo/wasm`の既定の入口はNodeのファイル読み込みを使います。
-それ以外の環境では`@yomilo/wasm/web`の`createYomilo`へ、WASMの本体を渡します。
+Workers（wrangler）では、既定の入口がWASMをモジュールとして読み込むため、そのまま使えます。
+ブラウザなどでは`@yomilo/wasm/web`の`createYomilo`へ、WASMの本体を渡します。
 
 ```ts
 import { createYomilo } from "@yomilo/wasm/web";
-// Workersでは、WASMの本体をモジュールとして読み込める
-import wasm from "@yomilo/wasm/yomilo_wasm_bg.wasm";
 
+// WASMの本体（@yomilo/wasm/yomilo_wasm_bg.wasm）を、利用側が置いた場所から取得する
+const wasm = await fetch("/yomilo_wasm_bg.wasm").then((r) => r.arrayBuffer());
 // 既定の入口と同じ関数を持つオブジェクトを得る
 const yomilo = createYomilo(wasm);
 const { segments } = yomilo.segment(source, null, "complete");

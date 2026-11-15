@@ -5,6 +5,7 @@
   "exports": {
     ".": {
       "types": "./index.d.ts",
+      "workerd": "./workerd.js",
       "default": "./index.js"
     },
     "./web": {
@@ -16,6 +17,7 @@
   "files": [
     "api.js",
     "index.js",
+    "workerd.js",
     "index.d.ts",
     "web.d.ts",
     "types",
