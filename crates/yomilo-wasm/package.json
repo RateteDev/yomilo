@@ -1,0 +1,22 @@
+{
+  "name": "@yomilo/wasm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./raw": {
+      "types": "./pkg/yomilo_wasm.d.ts",
+      "default": "./pkg/yomilo_wasm.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "types",
+    "pkg"
+  ]
+}

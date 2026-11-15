@@ -1,0 +1,42 @@
+<svg viewBox="0 0 480 296">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--ink-sub)" />
+    </marker>
+  </defs>
+  <path id="to-renderer" d="M128 148H172" fill="none" stroke="var(--ink-sub)" stroke-width="2" marker-end="url(#arrow)" />
+  <path id="to-web" d="M304 148C328 148 324 68 348 68" fill="none" stroke="var(--ink-sub)" stroke-width="2" marker-end="url(#arrow)" />
+  <path id="to-cli" d="M304 148C328 148 324 228 348 228" fill="none" stroke="var(--ink-sub)" stroke-width="2" marker-end="url(#arrow)" />
+  <rect x="16" y="120" width="112" height="56" rx="8" fill="var(--surface-subtle)" stroke="var(--border)" stroke-width="2" />
+  <text x="72" y="148" text-anchor="middle" dominant-baseline="central" font-size="18">記事のMDX</text>
+  <rect x="176" y="120" width="128" height="56" rx="8" fill="var(--surface-subtle)" stroke="var(--border)" stroke-width="2" />
+  <text x="240" y="148" text-anchor="middle" dominant-baseline="central" font-size="18">共有の描画</text>
+  <rect x="352" y="40" width="112" height="56" rx="8" fill="var(--surface-subtle)" stroke="var(--border)" stroke-width="2" />
+  <rect x="352" y="40" width="112" height="56" rx="8" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.7;0.75;1" dur="3s" repeatCount="indefinite" />
+  </rect>
+  <text x="408" y="68" text-anchor="middle" dominant-baseline="central" font-size="18">Web</text>
+  <rect x="352" y="200" width="112" height="56" rx="8" fill="var(--surface-subtle)" stroke="var(--border)" stroke-width="2" />
+  <rect x="352" y="200" width="112" height="56" rx="8" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0">
+    <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.7;0.75;1" dur="3s" repeatCount="indefinite" />
+  </rect>
+  <text x="408" y="228" text-anchor="middle" dominant-baseline="central" font-size="18">CLI</text>
+  <circle r="6" fill="var(--accent)" opacity="0">
+    <animateMotion dur="3s" repeatCount="indefinite" calcMode="linear" keyPoints="0;1;1" keyTimes="0;0.3;1">
+      <mpath href="#to-renderer" />
+    </animateMotion>
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.3;0.31;1" dur="3s" repeatCount="indefinite" />
+  </circle>
+  <circle r="6" fill="var(--accent)" opacity="0">
+    <animateMotion dur="3s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.4;0.7;1">
+      <mpath href="#to-web" />
+    </animateMotion>
+    <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.39;0.4;0.7;0.71;1" dur="3s" repeatCount="indefinite" />
+  </circle>
+  <circle r="6" fill="var(--accent)" opacity="0">
+    <animateMotion dur="3s" repeatCount="indefinite" calcMode="linear" keyPoints="0;0;1;1" keyTimes="0;0.4;0.7;1">
+      <mpath href="#to-cli" />
+    </animateMotion>
+    <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.39;0.4;0.7;0.71;1" dur="3s" repeatCount="indefinite" />
+  </circle>
+</svg>

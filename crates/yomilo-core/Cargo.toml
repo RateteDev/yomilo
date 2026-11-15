@@ -1,0 +1,26 @@
+[package]
+name = "yomilo-core"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Document structuring core for Yomilo (work in progress)"
+publish = false
+
+[features]
+typescript = ["dep:ts-rs"]
+
+[[bin]]
+name = "export-types"
+path = "src/bin/export-types.rs"
+required-features = ["typescript"]
+
+[dependencies]
+markdown = "=1.0.0"
+roxmltree = "0.21.1"
+syntect = { version = "5.3.0", default-features = false, features = ["parsing", "regex-fancy"] }
+two-face = { version = "0.5.2", default-features = false, features = ["syntect-fancy"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+base64 = "0.22"
+ts-rs = { version = "12.0.1", optional = true, features = ["no-serde-warnings"] }
+regex = { version = "1.12", default-features = false, features = ["std", "unicode-case", "unicode-perl"] }

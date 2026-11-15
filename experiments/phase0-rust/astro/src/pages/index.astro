@@ -1,0 +1,9 @@
+---
+import {createRequire} from 'node:module';
+const require = createRequire(import.meta.url);
+const {parse_json}=require(process.env.ARTICLE_POC_WASM_JS ?? '/tmp/article-wasm-poc-20261012/pkg/article_wasm_poc.js');
+const raw=JSON.parse(parse_json('# Astroに届いた見出し\n\nRustから生成しました。'));
+const escapeHtml=(s)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+const html=raw.children.map(n=>n.type==='heading'?`<h${n.depth}>${escapeHtml(n.children.map(x=>x.value).join(''))}</h${n.depth}>`:n.type==='paragraph'?`<p>${escapeHtml(n.children.map(x=>x.value).join(''))}</p>`:'').join('');
+---
+<html lang="ja"><body><article set:html={html}/></body></html>

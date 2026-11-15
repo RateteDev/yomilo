@@ -1,0 +1,3 @@
+[workspace]
+members = ["crates/yomilo-core", "crates/yomilo-wasm"]
+resolver = "3"

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if git diff --cached --name-only | grep -qE '^(packages/|package.json|biome.json|bun.lock)'; then
+  just check
+fi
+if git diff --cached --name-only | grep -qE '^(crates/|Cargo\.)'; then
+  cargo fmt --all -- --check
+fi

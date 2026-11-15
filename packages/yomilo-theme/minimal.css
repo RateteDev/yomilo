@@ -1,0 +1,423 @@
+/* @yomilo/htmlの本文HTMLへ当てる最小テーマ。寸法・配置・色のすべてをこのファイルが持つ。 */
+@layer tokens, structure, design;
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+    --bg: #fbfbf9;
+    --ink: #1d1f21;
+    --ink-sub: #5c6168;
+    --border: #d4d6d9;
+    --surface-subtle: #f1f2f0;
+    --accent: #0b5cad;
+    --focus-ring: #0b5cad;
+    --callout-note: #0b5cad;
+    --callout-warning: #9a5b00;
+    --callout-caution: #b3261e;
+    --font-sans:
+      system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Noto Sans Mono CJK JP", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a;
+      --ink: #e6e7e8;
+      --ink-sub: #a0a5ab;
+      --border: #3a3d41;
+      --surface-subtle: #212326;
+      --accent: #7ab8f5;
+      --focus-ring: #7ab8f5;
+      --callout-note: #7ab8f5;
+      --callout-warning: #e3b15c;
+      --callout-caution: #f2867d;
+    }
+  }
+}
+
+@layer structure {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+    font-size: 1rem;
+    line-height: 1.85;
+    overflow-wrap: anywhere;
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  h1 {
+    margin: 0 0 1.5rem;
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    margin: 2.5rem 0 1rem;
+    font-size: 1.35rem;
+  }
+
+  h3 {
+    margin: 2rem 0 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  p,
+  ul,
+  ol,
+  blockquote,
+  .callout,
+  .media,
+  .code-block-wrapper,
+  .code-group,
+  .table-wrap,
+  .url-card,
+  .tweet-card {
+    margin: 0 0 1.25rem;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.5rem;
+  }
+
+  li > ul,
+  li > ol {
+    margin: 0.25rem 0;
+  }
+
+  blockquote {
+    padding: 0.25rem 1rem;
+  }
+
+  blockquote > :last-child,
+  .callout-body > :last-child {
+    margin-bottom: 0;
+  }
+
+  .code-group > .code-block-wrapper {
+    margin: 0;
+  }
+
+  hr {
+    margin: 2rem 0;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  code {
+    overflow-wrap: normal;
+  }
+
+  :not(pre) > code {
+    padding: 0.1em 0.35em;
+    overflow-wrap: anywhere;
+  }
+
+  .code-block-wrapper {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .code-block-header {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.25rem 1rem;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  pre {
+    margin: 0;
+    padding: 0.875rem 1rem;
+    overflow-x: auto;
+    line-height: 1.6;
+    tab-size: 2;
+  }
+
+  pre:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+    font-variant-numeric: tabular-nums;
+  }
+
+  :is(th, td)[data-align="center"] {
+    text-align: center;
+  }
+
+  :is(th, td)[data-align="right"] {
+    text-align: right;
+  }
+
+  p[data-rejected] {
+    white-space: pre-wrap;
+  }
+
+  .callout {
+    padding: 0.75rem 1rem;
+  }
+
+  .callout-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .media :is(img, video, svg) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* 比率の指定は読み込み前に場所を取るためにあり、幅が決まらないと比率から高さを出せない。 */
+  .media :is(img, video)[data-ratio-width][data-ratio-height] {
+    width: 100%;
+  }
+
+  /* 比率は原稿の情報をCSSで読み取る。未対応のブラウザでは素材本来の比率で表示する。 */
+  @supports (
+      aspect-ratio: attr(data-ratio-width type(<number>)) / attr(data-ratio-height type(<number>))
+    ) {
+    .media :is(img, video)[data-ratio-width][data-ratio-height] {
+      aspect-ratio:
+        auto attr(data-ratio-width type(<number>)) / attr(data-ratio-height type(<number>));
+    }
+  }
+
+  .media-caption {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .url-card,
+  .tweet-card {
+    display: block;
+    padding: 0.75rem 1rem;
+  }
+
+  .url-card {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .url-card__favicon {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .url-card__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.5;
+  }
+
+  .url-card__title {
+    font-weight: 700;
+  }
+
+  .url-card__url,
+  .tweet-card__handle,
+  .tweet-card__footer {
+    font-size: 0.8125rem;
+  }
+
+  .tweet-card__header,
+  .tweet-card__footer {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .tweet-card__avatar {
+    flex: none;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .tweet-card__author {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+  }
+
+  .tweet-card__name {
+    font-weight: 700;
+  }
+
+  .tweet-card__text {
+    margin: 0.5rem 0;
+    white-space: pre-wrap;
+  }
+
+  .tweet-card__media-item img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 0.5rem;
+  }
+
+  .tweet-card__stat--like::before {
+    content: "Likes ";
+  }
+
+  .tweet-card__stat--reply::before {
+    content: "Replies ";
+  }
+}
+
+@layer design {
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  blockquote {
+    border-left: 3px solid var(--border);
+    color: var(--ink-sub);
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  code,
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  :not(pre) > code {
+    background: var(--surface-subtle);
+  }
+
+  .code-block-wrapper {
+    background: var(--surface-subtle);
+    border: 1px solid var(--border);
+  }
+
+  .code-block-header {
+    color: var(--ink-sub);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-group > .code-block-wrapper + .code-block-wrapper {
+    border-top: 0;
+  }
+
+  /* 原稿のSVGで塗りを省いた図形と文字は、本文の文字色で描く。 */
+  .svg-figure svg {
+    color: var(--ink);
+    fill: currentColor;
+  }
+
+  .code-group-label {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  table,
+  th,
+  td {
+    border: 1px solid var(--border);
+  }
+
+  th {
+    background: var(--surface-subtle);
+  }
+
+  .callout {
+    background: var(--surface-subtle);
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+  }
+
+  .callout.note {
+    border-left-color: var(--callout-note);
+  }
+
+  .callout.note .callout-label {
+    color: var(--callout-note);
+  }
+
+  .callout.warning {
+    border-left-color: var(--callout-warning);
+  }
+
+  .callout.warning .callout-label {
+    color: var(--callout-warning);
+  }
+
+  .callout.caution {
+    border-left-color: var(--callout-caution);
+  }
+
+  .callout.caution .callout-label {
+    color: var(--callout-caution);
+  }
+
+  .media-caption,
+  .url-card__url,
+  .tweet-card__handle,
+  .tweet-card__footer {
+    color: var(--ink-sub);
+  }
+
+  .url-card,
+  .tweet-card {
+    border: 1px solid var(--border);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .url-card__title {
+    color: var(--accent);
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "yomilo-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "crates/yomilo-wasm",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@yomilo/wasm": "workspace:*",
+    "@biomejs/biome": "2.5.10",
+    "@types/bun": "1.4.3",
+    "typescript": "6.0.2"
+  }
+}
