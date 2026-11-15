@@ -1,6 +1,5 @@
 import { strict as assert } from "node:assert";
 import { readFile } from "node:fs/promises";
-import { createRequire } from "node:module";
 import {
   checkCanonical,
   defaultPreparationInputs,
@@ -10,11 +9,12 @@ import {
   segment,
   YomiloError,
 } from "./index.js";
+// index.jsが初期化した同じ読み込み口を、包む前の出力との比較に使う。
+import * as raw from "./pkg/yomilo_wasm.js";
 
 const path = process.argv[2];
 if (!path) throw new Error("Usage: node smoke.mjs <markdown-file>");
 const source = await readFile(path, "utf8");
-const raw = createRequire(import.meta.url)("./pkg/yomilo_wasm.js");
 
 const batch = segment(source, null, "complete");
 assert.deepEqual(batch, JSON.parse(raw.segment(source, "null", "complete")));

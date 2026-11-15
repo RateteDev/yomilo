@@ -1,6 +1,5 @@
 {
   "name": "@yomilo/wasm",
-  "version": "0.1.0",
   "private": true,
   "type": "module",
   "exports": {
@@ -8,15 +7,20 @@
       "types": "./index.d.ts",
       "default": "./index.js"
     },
-    "./raw": {
-      "types": "./pkg/yomilo_wasm.d.ts",
-      "default": "./pkg/yomilo_wasm.js"
-    }
+    "./web": {
+      "types": "./web.d.ts",
+      "default": "./api.js"
+    },
+    "./yomilo_wasm_bg.wasm": "./pkg/yomilo_wasm_bg.wasm"
   },
   "files": [
+    "api.js",
     "index.js",
     "index.d.ts",
+    "web.d.ts",
     "types",
-    "pkg"
+    "pkg/yomilo_wasm.js",
+    "pkg/yomilo_wasm.d.ts",
+    "pkg/yomilo_wasm_bg.wasm"
   ]
 }

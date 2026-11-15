@@ -1,3 +1,6 @@
+// hastのrawノードの型拡張は、このファイルから読む。利用側が配布物のTSソースを型検査するとき、
+// 利用側のtsconfigからnode_modulesの別名経由で拡張だけを読むと、hastの解決先がずれて拡張が効かないため。
+/// <reference path="./hast-raw.d.ts" />
 import type { MediaDelivery, RenderBlockNode, RenderSegment, TweetData } from "@yomilo/wasm";
 import type { Element, ElementContent, Root, Text } from "hast";
 import { toHtml } from "hast-util-to-html";

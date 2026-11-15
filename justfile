@@ -45,3 +45,8 @@ ci-local:
     wait "$rust_pid" || failed=1
     wait "$html_pid" || failed=1
     exit "$failed"
+
+# Pack each package into dist/ as the tarballs attached to a GitHub Release
+[group('Release')]
+pack: wasm-build
+    bun tools/pack.ts

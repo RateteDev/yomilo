@@ -1,0 +1,24 @@
+name: Release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      # checkoutはタグを軽量タグとして取り直すことがあり、ノートに使う注釈が消えるため取り直す。
+      - run: git fetch --force origin "refs/tags/$GITHUB_REF_NAME:refs/tags/$GITHUB_REF_NAME"
+      - uses: jdx/mise-action@v4
+      - run: just install
+      - run: just pack
+        env:
+          YOMILO_RELEASE_TAG: ${{ github.ref_name }}
+      - run: just html-ci
+      # immutable releasesでは公開後に添付を足せないため、配布物とノートを1回の作成で揃える。ノートは注釈付きタグの本文を使う。
+      - run: gh release create "$GITHUB_REF_NAME" dist/*.tgz --verify-tag --title "$GITHUB_REF_NAME" --notes-from-tag
+        env:
+          GH_TOKEN: ${{ github.token }}
